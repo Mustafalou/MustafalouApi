@@ -40,12 +40,16 @@ exports.AddUser = function(req,res){
     const id = parseInt(req.params.id)  
     try{
         sequelize.authenticate()
-        sequelize.query("insert into User(UserName,PassWord) values('"+ req.body.UserName+"','"+req.body.PassWord+"');").then(([result,metadata])=>{
-            
+        sequelize.query("insert into User(UserName,PassWord) values('"+ req.body.UserName+"','"+req.body.PassWord+"');")
+        .then(([result,metadata])=>{
+            res.status(200).json({
+                "UserName":req.body.UserName,
+                "status":"Added"
+            })
         })
-        res.status(200).json({
-            "UserName":req.body.UserName,
-            "status":"Added"
+        .catch((error)=>{
+            console.log(error)
+            res.status(400).json({"status":"fuck you"})
         })
     }
     catch(error){
@@ -73,9 +77,11 @@ exports.DeleteUser = function(req,res){
     const id = parseInt(req.params.id)
     try{
         sequelize.authenticate()
-        sequelize.query("delete from User where idUser = "+id+";").then(([results,metadata])=>{
+        sequelize.query("delete from User where idUser = "+id+";")
+        .then(([results,metadata])=>{
             res.status(200).json({"status":"Succes"})
         })
+        
         
     }catch(error){
         console.error(error)
@@ -86,7 +92,8 @@ exports.ShowUserbyUserName = function(req,res){
     const UserName = req.params.UserName    
     try{
         sequelize.authenticate()
-        sequelize.query("select * from User where UserName = '"+UserName+"';").then(([resultat,metadata])=>{
+        sequelize.query("select * from User where UserName = '"+UserName+"';")
+        .then(([resultat,metadata])=>{
             res.status(200).json(resultat)
         })
     }
