@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>
+            UserApi
+        </title>
+    </head>
+    <body>
+        <h1>Users</h1>
+        
+        <% data.forEach((user)=>{%>
+            <div id="userblock">
+                <Label>idUser   : <%=user.idUser%></Label><br>
+                <label>UserName : <%=user.UserName%></label><br>
+                <Label>PassWord : <%=user.PassWord%></Label>
+            </div>
+            <br>
+        <%})%>
+        <form method="post" action="User/add">
+            <label>UserName</label><input name="UserName" type="text"></input><br>
+            <label>PassWord</label><input name="PassWord" type="text"></input><br>
+            <input type="submit" value="Add User"/>
+        </form>
+
+    </body>
+</html>
