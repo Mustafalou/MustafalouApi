@@ -23,7 +23,7 @@ exports.ShowAll = function(req,res){
         res.status(500).json({"status":"Connexion Error"})
     }
 }
-exports.ShowUser = function(req,res){
+exports.ShowUserbyID = function(req,res){
     const id = parseInt(req.params.id)    
     try{
         sequelize.authenticate()
@@ -80,12 +80,17 @@ exports.DeleteUser = function(req,res){
         console.error(error)
         res.send("error")
     }
-}/*
-exports.updateUser = function(req,res){
+}
+exports.ShowUserbyUserName = function(req,res){
+    const UserName = req.params.UserName    
     try{
         sequelize.authenticate()
-        sequelize.query("delete from User where idUser = "+req.params.id+";")
-    }catch(error){
-        console.error(error)
+        sequelize.query("select * from User where UserName = '"+UserName+"';").then(([resultat,metadata])=>{
+            res.status(200).json(resultat)
+        })
     }
-}*/
+    catch{
+        console.error("No connexion")
+        res.status(500).json({"status":"Connexion Error"})
+    }
+}
