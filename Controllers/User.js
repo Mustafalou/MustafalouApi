@@ -70,9 +70,10 @@ exports.UpdateUser = function(req,res){
     }
 }
 exports.DeleteUser = function(req,res){
+    const id = parseInt(req.params.id)
     try{
         sequelize.authenticate()
-        sequelize.query("delete from User where idUser = "+req.params.id+";").then(([results,metadata])=>{
+        sequelize.query("delete from User where idUser = "+id+";").then(([results,metadata])=>{
             res.status(200).json({"status":"Succes"})
         })
         
