@@ -1,5 +1,7 @@
 const express = require('express')
 let routes = require("./routes")
+const sequelize = require("./db")
+sequelize.sync()
 const app = express()
 app.use(express.urlencoded());
 app.use(express.json());

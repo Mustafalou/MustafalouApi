@@ -1,104 +1,73 @@
 const express = require("express")
 const User = require("../Models/User")
-const {Sequelize} = require("sequelize")
-const details = require("../info.json")
-const sequelize = new Sequelize(
-    details.database,
-    details.HostName,
-    details.PassWord,
-    {
-        dialect:details.dialect,
-        host:details.HostIP
-    }
-)
+
 exports.ShowAll = function(req,res){    
-    try{
-        sequelize.authenticate()
-        sequelize.query("select * from User;").then(([resultat,metadata])=>{
-            res.status(200).json(resultat)
+    User.findAll({ attributes : ["name","password"]})
+        .then(data=>{
+            res.json(data)
         })
-    }
-    catch{
-        console.error("No connexion")
-        res.status(500).json({"status":"Connexion Error"})
-    }
+        .catch(err => {
+            res.status(500).json({ message: err.message })
+        }
+    )
 }
 exports.ShowUserbyID = function(req,res){
     const id = parseInt(req.params.id)    
-    try{
-        sequelize.authenticate()
-        sequelize.query("select * from User where idUser = "+id+";").then(([resultat,metadata])=>{
-            res.status(200).json(resultat)
+    User.findOne({attributes : ["name","password"], where:{id:id}})
+        .then(data=>{
+            res.json(data)
         })
-    }
-    catch{
-        console.error("No connexion")
-        res.status(500).json({"status":"Connexion Error"})
-    }
+        .catch(err=>{
+            res.status(500).json({message:err.message})
+        }
+    )
 }
 exports.AddUser = function(req,res){
-    const id = parseInt(req.params.id)  
-    try{
-        sequelize.authenticate()
-        sequelize.query("insert into User(UserName,PassWord) values('"+ req.body.UserName+"','"+req.body.PassWord+"');")
-        .then(([result,metadata])=>{
-            res.status(200).json({
-                "UserName":req.body.UserName,
-                "status":"Added"
-            })
+    let user = User.build({ name: req.body.name, password: req.body.password })
+    user.save()
+        .then(data=>{
+            res.json(data)
         })
-        .catch((error)=>{
-            console.log(error)
-            res.status(400).json({"status":"fuck you"})
-        })
-    }
-    catch(error){
-        console.log(error)
-        res.send("error")
-    }
+        .catch(err=>{
+            res.status(500).json({ message: err.message })
+        }
+    )
 }
 exports.UpdateUser = function(req,res){    
     const id = req.params.id
-    try{
-        sequelize.authenticate()
-        sequelize.query("Update User set UserName ='"+req.body.UserName+"',PassWord='"+req.body.PassWord+"' where idUser="+id+";").then(([resultat,metadata])=>{
-            res.status(200).json({
-                "UserName":req.body.UserName,
-                "status":"Updated"
-            })
+    User.update(
+        {name:req.body.name,password:req.body.password},
+        {where:{id:id}}
+        )
+        .then(data=>{
+            res.json(data)
         })
-    }
-    catch{
-        console.error("No connexion")
-        res.status(500).json({"status":"Connexion Error"})
-    }
+        .catch(err=>{
+            res.status(500).json({ message: err.message })
+        }
+    )
 }
 exports.DeleteUser = function(req,res){
     const id = parseInt(req.params.id)
-    try{
-        sequelize.authenticate()
-        sequelize.query("delete from User where idUser = "+id+";")
-        .then(([results,metadata])=>{
-            res.status(200).json({"status":"Succes"})
+    User.delete(
+        {where:{id:id}}
+        )
+        .then(data=>{
+            res.json(data)
         })
-        
-        
-    }catch(error){
-        console.error(error)
-        res.send("error")
-    }
+        .catch(err=>{
+            res.status(500).json({message:err.message})
+        }
+    )
 }
 exports.ShowUserbyUserName = function(req,res){
-    const UserName = req.params.UserName    
-    try{
-        sequelize.authenticate()
-        sequelize.query("select * from User where UserName = '"+UserName+"';")
-        .then(([resultat,metadata])=>{
-            res.status(200).json(resultat)
+    const name = req.params.name    
+    User.findOne({attributes : ["name","password"], where:{name:name}})
+        .then(data=>{
+            res.json(data)
         })
-    }
-    catch{
-        console.error("No connexion")
-        res.status(500).json({"status":"Connexion Error"})
-    }
+        .catch(err=>{
+            res.status(500).json({message:err.message})
+        }
+    )
 }
